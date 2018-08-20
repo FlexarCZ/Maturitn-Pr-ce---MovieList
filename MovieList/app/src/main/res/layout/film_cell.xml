@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/filmImage"
+            android:layout_gravity="center"
+            android:src="@drawable/error_film_image"
+            android:layout_marginRight="2dp"
+            android:layout_width="fill_parent"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="2dp" />
+
+
+    <ImageView
+        android:id="@+id/movieCellOverlay"
+        android:alpha="0.6"
+        android:background="@drawable/film_cell_overlay"
+        android:src="@drawable/film_cell_overlay"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/filmImage"
+        android:layout_alignLeft="@+id/filmImage"
+        android:layout_alignRight="@+id/filmImage"
+        android:layout_alignTop="@+id/filmImage"/>
+
+    <ImageView
+        android:id="@+id/goldStripe"
+        android:src="@drawable/gold_stripe2"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="false"
+        android:visibility="gone"
+        android:layout_height="40dp"
+        android:layout_width="40dp"
+        android:layout_alignStart="@+id/filmImage"
+        android:layout_alignTop="@+id/filmImage" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_alignBottom="@+id/filmImage"
+        android:layout_alignLeft="@+id/filmImage"
+        android:layout_alignRight="@+id/filmImage"
+        android:layout_alignTop="@+id/filmImage"
+        android:id="@+id/infoBar"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:text="Film Film "
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:textAlignment="center"
+            android:layout_above="@+id/ratingStars"
+            android:layout_marginRight="4dp" />
+
+        <LinearLayout
+            android:id="@+id/ratingStars"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"></LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ratingFirstStar"
+                    android:layout_toRightOf="@+id/ratingSecondStar"
+                    android:layout_alignBottom="@+id/ratingThirdStar"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_star_border_black_24dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ratingSecondStar"
+                    android:layout_toRightOf="@+id/ratingThirdStar"
+                    android:layout_alignBottom="@+id/ratingThirdStar"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_star_border_black_24dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ratingThirdStar"
+                    android:layout_centerInParent="true"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_star_border_black_24dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ratingFourthStar"
+                    android:layout_toLeftOf="@+id/ratingThirdStar"
+                    android:layout_alignBottom="@+id/ratingThirdStar"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_star_border_black_24dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/ratingFifthStar"
+                    android:layout_toLeftOf="@+id/ratingSecondStar"
+                    android:layout_alignBottom="@+id/ratingThirdStar"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_star_border_black_24dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"></LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:weightSum="1"
+            android:layout_marginBottom="5dp"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_bookmark_black_36dp"
+                android:id="@+id/bookMarkButton"
+                android:layout_marginRight="4dp"
+                android:layout_weight="0.5"
+                android:adjustViewBounds="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_clear_black_36dp"
+                android:id="@+id/clearBookmarkButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="4dp"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:layout_weight="0.5" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_clear_black_36dp"
+                android:id="@+id/clearSeenButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="2dp"
+                android:layout_toStartOf="@+id/bookMarkButton"
+                android:visibility="gone"
+                android:layout_weight="0.5" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_done_all_black_36dp"
+                android:id="@+id/watchlistSeenButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="2dp"
+                android:layout_toStartOf="@+id/clearBookmarkButton"
+                android:visibility="gone"
+                android:layout_weight="0.5" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_done_all_black_36dp"
+                android:id="@+id/popularSeenButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/bookMarkButton"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="4dp" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <!--
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_alignBaseline="@+id/filmImage"
+            android:layout_alignBottom="@+id/filmImage"
+            android:layout_alignEnd="@+id/filmImage"
+            android:id="@+id/infoBar"
+            android:layout_height="45dp"
+                android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="false"
+                android:background="@android:drawable/screen_background_dark_transparent"
+                android:layout_height="50dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_done_all_white_24dp"
+                android:id="@+id/popularSeenButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/ic_done_all_white_24dp"
+                android:layout_toStartOf="@+id/bookMarkButton"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_done_all_white_24dp"
+                android:id="@+id/watchlistSeenButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/ic_done_all_white_24dp"
+                android:layout_toStartOf="@+id/clearBookmarkButton"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_clear_white_24dp"
+                android:id="@+id/clearSeenButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/ic_clear_white_24dp"
+                android:layout_toStartOf="@+id/bookMarkButton"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_clear_white_24dp"
+                android:id="@+id/clearBookmarkButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/ic_clear_white_24dp"
+                android:layout_alignParentRight="true"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_bookmark_white_24dp"
+                android:id="@+id/bookMarkButton"
+                android:adjustViewBounds="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/ic_bookmark_white_24dp"
+                android:layout_alignParentRight="true" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:text="Film Film "
+                android:textStyle="normal|bold"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="8dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_width="55dp"
+                android:layout_centerVertical="true" />
+
+
+        </RelativeLayout>
+    -->
+
+    </RelativeLayout>

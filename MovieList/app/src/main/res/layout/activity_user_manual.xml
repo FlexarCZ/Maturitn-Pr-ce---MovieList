@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_user_manual"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="info.soducius.movieList.UserManual"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:titleTextColor="@android:color/white"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:text="Welcome to MovieList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/welcomeTextView"
+        android:textStyle="normal|bold"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:paddingTop="20dp"
+        android:textSize="27sp"
+        android:layout_below="@+id/toolbar" />
+
+    <TextView
+        android:text="This application was created as a high school graduation project.\n\nLibraries used:\n-Picasso\n-Gson\n-Volley"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="20dp"
+        android:textSize="18sp"
+        android:layout_below="@+id/welcomeTextView" />
+
+    <TextView
+        android:text="As this is your first time using this app you should look at the tutorial below.\nIt will show you how the application should be used."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/textView2"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/easteregg_image"
+        android:id="@+id/easterEggImageView"
+        android:visibility="gone"
+        android:alpha="0"
+        android:layout_alignParentBottom="true" />
+
+    <ImageView
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_exit_to_app_black_36dp"
+        android:id="@+id/toAppButton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:adjustViewBounds="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="120dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_height="wrap_content"
+        android:id="@+id/tutorialButton"
+        android:layout_marginRight="20dp"
+        android:adjustViewBounds="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_navigate_next_black_36dp"
+        android:layout_alignTop="@+id/toAppButton"
+        android:layout_alignBottom="@+id/toAppButton"
+        android:layout_alignParentRight="true"
+        android:layout_width="120dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone" />
+
+</RelativeLayout>

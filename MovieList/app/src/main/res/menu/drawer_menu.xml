@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fr1"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="Popular movies" />
+
+    <item
+        android:id="@+id/fr2"
+        android:icon="@drawable/ic_bookmark_white_24dp"
+        android:title="Watchlist" />
+
+    <item
+        android:id="@+id/fr3"
+        android:icon="@drawable/ic_done_all_white_24dp"
+        android:title="Seenlist" />
+
+    <item
+        android:id="@+id/top_rated"
+        android:icon="@android:drawable/btn_star"
+        android:title="Top rated" />
+
+    <item
+        android:id="@+id/user_manual"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="User manual" />
+</menu>

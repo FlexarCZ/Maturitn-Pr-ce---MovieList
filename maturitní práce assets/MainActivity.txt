@@ -1,0 +1,401 @@
+package com.example.android.MovieList;
+
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.SearchView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+
+    static BaseAdapter PopularMoviesGridViewAdapter;
+    public static BaseAdapter WatchlistGridViewAdapter;
+    public static BaseAdapter SeenlistGridViewAdapter;
+    static GridView gv;
+    static ArrayList<String> namesArrayList = new ArrayList<>();
+    static ArrayList<String> imagesURLArrayList = new ArrayList<>();
+    static ArrayList<String> detailLinksArrayList = new ArrayList<>();
+    static ArrayList<Integer> idArrayList = new ArrayList<>();
+
+    public static ArrayList<String> watchlistMovies = new ArrayList<>();
+    public static ArrayList<String> seenlistMovies = new ArrayList<>();
+
+    AppSectionsPagerAdapter mAppSectionsPagerAdapter;
+
+    ViewPager mViewPager;
+
+    static MainActivity mn;
+
+    private Preferences mPrefs;
+
+    static int gridViewLoadLittleHelper = 0;
+//**************************************************************************************************
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        mn = MainActivity.this;
+
+        mPrefs = new Preferences(this);
+
+        if (mPrefs.getFirstRun()){
+            try {
+                OutputStreamWriter outputStreamWriterwatchlist = new OutputStreamWriter(openFileOutput("watchlist.txt", Context.MODE_PRIVATE));
+                outputStreamWriterwatchlist.write("");
+                outputStreamWriterwatchlist.close();
+                //****************
+                OutputStreamWriter outputStreamWriterseenlist = new OutputStreamWriter(openFileOutput("seenlist.txt", Context.MODE_PRIVATE));
+                outputStreamWriterseenlist.write("");
+                outputStreamWriterseenlist.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mPrefs.setFirstRun(false);
+        }
+
+        String watchlistString = readFromFile("watchlist.txt");
+        if(watchlistString.equals("")) {
+            // idn...
+        } else {
+            Log.i("WATCHLIST STRING START:",watchlistString);
+            try {
+                JSONObject wholeJSON = new JSONObject(watchlistString);
+                for(int i=0; i < wholeJSON.length(); i++){
+                    JSONArray oneMovieArray = wholeJSON.getJSONArray(String.valueOf(i));
+                    JSONObject oneMovieObject = oneMovieArray.getJSONObject(0);
+                    watchlistMovies.add(String.valueOf(oneMovieObject));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        String seenlistString = readFromFile("seenlist.txt");
+        if(seenlistString.equals("")) {
+            // idn...
+        } else {
+            Log.i("SEENLIST STRING START:",seenlistString);
+            try {
+                JSONObject wholeJSON = new JSONObject(seenlistString);
+                for(int i=0; i < wholeJSON.length(); i++){
+                    JSONArray oneMovieArray = wholeJSON.getJSONArray(String.valueOf(i));
+                    JSONObject oneMovieObject = oneMovieArray.getJSONObject(0);
+                    seenlistMovies.add(String.valueOf(oneMovieObject));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Create the adapter that will return a fragment for each of the three primary sections
+        // of the app.
+        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the action bar.
+        final ActionBar actionBar = getActionBar();
+        
+
+        // Specify that the Home/Up button should not be enabled, since there is no hierarchical
+        // parent.
+        actionBar.setHomeButtonEnabled(false);
+
+        // Specify that we will be displaying tabs in the action bar.
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        // Set up the ViewPager, attaching the adapter and setting up a listener for when the
+        // user swipes between sections.
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                // When swiping between different app sections, select the corresponding tab.
+                // We can also use ActionBar.Tab#select() to do this if we have a reference to the
+                // Tab.
+                actionBar.setSelectedNavigationItem(position);
+            }
+        });
+
+        // For each of the sections in the app, add a tab to the action bar.
+        for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
+            // Create a tab with text corresponding to the page title defined by the adapter.
+            // Also specify this Activity object, which implements the TabListener interface, as the
+            // listener for when this tab is selected.
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(mAppSectionsPagerAdapter.getPageTitle(i))
+                            .setTabListener(this));
+        }
+
+
+        //Hides keyboard on start (fkn searchView...)
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public AppSectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            switch (i) {
+                case 0:
+                    // The first section of the app is the most interesting -- it offers
+                    // a launchpad into the other demonstrations in this example application.
+                    return new PopularMoviesSectionFragment();
+
+                case 1:
+                    return new WatchListSectionFragment();
+
+                default:
+
+                    return new SeenListSectionFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            //return "Section " + (position + 1);
+
+            if (position == 0) return "Popular Movies";
+            else if (position == 1) return "Watchlist";
+            else return "Seen";
+        }
+    }
+
+
+
+    public static class PopularMoviesSectionFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+
+            final View rootView = inflater.inflate(R.layout.fragment_section_popular_movies, container, false);
+
+
+            gv = (GridView) rootView.findViewById(R.id.gridView1);
+            final SearchView sv = (SearchView) rootView.findViewById(R.id.searchView);
+            sv.setIconifiedByDefault(false);
+
+            if(namesArrayList.isEmpty()) {
+                new PopularMoviesJSONParser().execute(String.valueOf(1));
+            }
+                PopularMoviesGridViewAdapter = new PopularMoviesAdapter(getActivity(), namesArrayList, imagesURLArrayList, detailLinksArrayList, idArrayList);
+                gv.setAdapter(PopularMoviesGridViewAdapter);
+
+            gv.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    // TODO Auto-generated method stub
+                }
+                @Override
+                public void onScroll(final AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                    if (firstVisibleItem == 0) {
+                        View v = gv.getChildAt(0);
+                        int offset = (v == null) ? 0 : v.getTop();
+                        if (offset == 0) {
+                            // reached the top
+                            sv.setVisibility(View.VISIBLE);
+                        }
+                    } else if (totalItemCount - visibleItemCount == firstVisibleItem) {
+                        View v = gv.getChildAt(totalItemCount - 1);
+                        int offset = (v == null) ? 0 : v.getTop();
+                        if (offset == 0 && gridViewLoadLittleHelper != totalItemCount/20) {
+                            // reached the bottom
+                            gridViewLoadLittleHelper = totalItemCount/20;
+                            Log.i("IIIIIIIIIIIIIIIIII", String.valueOf(gridViewLoadLittleHelper));
+                            new PopularMoviesJSONParser().execute(String.valueOf(gridViewLoadLittleHelper + 1));
+                        }
+                    } else {
+                        // not top
+                        sv.setVisibility(View.GONE);
+                    }
+
+                }
+            });
+
+            sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Toast.makeText(mn, "Vyhledal si: "+query, Toast.LENGTH_SHORT).show();
+                    Intent intentToMovieSearchActivity = new Intent(mn, MovieSearch.class);
+                    intentToMovieSearchActivity.putExtra("query", query);
+                    startActivity(intentToMovieSearchActivity);
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+
+            return rootView;
+        }
+    }
+
+
+
+    public static class WatchListSectionFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_section_watchlist, container, false);
+            gv = (GridView) rootView.findViewById(R.id.gridView1);
+
+            WatchlistGridViewAdapter = new WatchlistAdapter(getActivity(),watchlistMovies);
+            gv.setAdapter(WatchlistGridViewAdapter);
+
+            //seenlistAdapter is here because viewpager loads only views right next to him so seenlist adapter wouldn't we initialized => null exception when adding to seenList right from the first screen
+            SeenlistGridViewAdapter = new SeenlistAdapter(getActivity(), seenlistMovies);
+            return rootView;
+        }
+    }
+
+    public static class SeenListSectionFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_section_seenlist, container, false);
+            gv = (GridView) rootView.findViewById(R.id.gridView1);
+
+            //SeenlistGridViewAdapter = new SeenlistAdapter(getActivity(), seenlistMovies);
+            gv.setAdapter(SeenlistGridViewAdapter);
+
+            return rootView;
+        }
+    }
+
+
+    private static class PopularMoviesJSONParser extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall("https://api.themoviedb.org/3/movie/popular?api_key=95148fc363ff244cab388010dfbfa949&language=en-US&page="+params[0]);
+
+            try {
+                JSONObject wholeJSON = new JSONObject(jsonStr);
+                JSONArray oneArray = wholeJSON.getJSONArray("results");
+
+                for (int i=0; i<oneArray.length(); i++){
+                    JSONObject oneMovie = oneArray.getJSONObject(i);
+                    String title = oneMovie.getString("title");
+                    namesArrayList.add(title);
+
+
+                    String imageURL = oneMovie.getString("poster_path");
+                    imagesURLArrayList.add(imageURL);
+
+
+                    String detailLink = String.valueOf(oneMovie.getInt("id"));
+                    detailLinksArrayList.add("https://api.themoviedb.org/3/movie/"+detailLink+"?api_key=95148fc363ff244cab388010dfbfa949&language=en-US");
+                    idArrayList.add(Integer.valueOf(detailLink));
+
+                    mn.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //This will notify gridViewAdapter that the data have been changed
+                            PopularMoviesGridViewAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String i = "";
+            return i;
+        }
+            @Override
+            protected void onPostExecute (String i) {
+                mn.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //notifyDataSetChanged here or update your UI on different thread
+                        PopularMoviesGridViewAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+    }
+
+    private String readFromFile(String fileName) {
+
+        String ret = "";
+        try {
+            FileInputStream inputStream = openFileInput(fileName);
+
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String receiveString = "";
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ((receiveString = bufferedReader.readLine()) != null) {
+                stringBuilder.append(receiveString);
+            }
+
+            inputStream.close();
+            ret = stringBuilder.toString();
+
+        } catch (IOException ignored) {
+        }
+        return ret;
+    }
+}
+
+
